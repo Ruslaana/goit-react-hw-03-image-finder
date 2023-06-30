@@ -25,8 +25,16 @@ class App extends Component {
     }
   }
 
+  // onChangeQuery = query => {
+  //   this.setState({ searchQuery: query, currentPage: 1, images: [] });
+  // };
+
   onChangeQuery = query => {
-    this.setState({ searchQuery: query, currentPage: 1, images: [] });
+    this.setState(prevState => ({
+      searchQuery: query,
+      currentPage: prevState.searchQuery !== query ? 1 : prevState.currentPage,
+      images: prevState.searchQuery !== query ? [] : prevState.images,
+    }));
   };
 
   fetchImages = () => {
