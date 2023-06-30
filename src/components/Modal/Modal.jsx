@@ -1,41 +1,41 @@
-import React, { useEffect } from 'react';
+import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import styles from './Modal.module.css';
 
-const Modal = ({ children, onClose }) => {
-  useEffect(() => {
-    const handleKeyDown = event => {
-      if (event.code === 'Escape') {
-        onClose();
-      }
-    };
+class Modal extends Component {
+  componentDidMount() {
+    window.addEventListener('keydown', this.handleKeyDown);
+  }
 
-    window.addEventListener('keydown', handleKeyDown);
+  componentWillUnmount() {
+    window.removeEventListener('keydown', this.handleKeyDown);
+  }
 
-    return () => {
-      window.removeEventListener('keydown', handleKeyDown);
-    };
-  }, [onClose]);
-
-  const handleBackdropClick = event => {
-    if (event.currentTarget === event.target) {
-      onClose();
+  handleKeyDown = event => {
+    if (event.code === 'Escape') {
+      this.props.onClose();
     }
   };
 
-  return (
-    <div className={styles.Overlay} onClick={handleBackdropClick}>
-      <div className={styles.Modal}>{children}</div>
-    </div>
-  );
-};
+  handleBackdropClick = event => {
+    if (event.currentTarget === event.target) {
+      this.props.onClose();
+    }
+  };
+
+  render() {
+    const { children } = this.props;
+
+    return (
+      <div className={styles.Overlay} onClick={this.handleBackdropClick}>
+        <div className={styles.Modal}>{children}</div>
+      </div>
+    );
+  }
+}
 
 Modal.propTypes = {
-  image: PropTypes.shape({
-    id: PropTypes.number.isRequired,
-    webformatURL: PropTypes.string.isRequired,
-    largeImageURL: PropTypes.string.isRequired,
-  }),
+  children: PropTypes.node.isRequired,
   onClose: PropTypes.func.isRequired,
 };
 
